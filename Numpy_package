@@ -1,0 +1,151 @@
+import numpy as np
+import pandas as pd
+
+# Assignment 1
+1. Generate an np array of (a) vector of lenght 50 (b) two dimension of shape 5x4. Both uniformly distributed between 0 and 1
+2. Split the two dimension array in 1 above into three arrays taking the first two rows, follow by the next two rows and put the remaining row in another variable
+3. Split the vector into in 1 above three arrays by taking the first 15, follow by the next 20 and the remaining into another variable.
+4. Create a 4x5 array: 
+   (a). Using manual method
+   (b). Using randomly generated value between 0 and 1
+   (c). Using array of ones
+
+#1.Generate an np array of (a) vector of lenght 50 
+x2= np.random.random(50)
+x2
+
+#1b two dimension of shape 5x4. Both uniformly distributed between 0 and 1
+np.random.seed(0)
+xq=np.random.random((5,4))
+xq
+
+#2 split the two dimension array in 1 above into three arrays taking the first two rows and put the remaining row in another variable
+first,second, remain= np.vsplit(xq,[2,4])
+print("the first split\n",first)
+print("the second split\n",second)
+print("the remain split \n",third)
+
+#3. split the vector in 1 above into three arrays by taking the first 15, follow by the next 20 and the remaining into another variable
+x1,x2,x3 =np.split(x2,(15,35))
+print(x1,x2,x3)
+
+#4a.using manual method creating 4x5 array
+np.array([[1,2,3,4,5],[6,7,8,9,10],[11,12,13,14,15],[16,17,18,19,20]])
+
+#4b.  using randomly generated value between 0 and 1
+np.random.random((4,5))
+
+#4c. using array of one
+np.ones((4,5), dtype=int)
+
+# Assignment 2:
+    #use us_births data to compute the following using np:
+        #extract the year, gender and births column from the data
+        #compute the aggregation of sum of total birth, sum of female birth and sum of male birth, mean and median
+        #compute the maximum births and minimum births
+        #indicate the gender with minimum birth and maximum birth
+        #indicate the year with minimum birth and maximum birth
+
+df=pd.read_csv('C:\\Datasets\\us_births.csv')
+df.head()
+
+#1. Extract the year, gender and births column from the data
+
+#2.compute the aggregation of sum of total birth,sum of female birth 
+us_year = np.array(df['year'])
+us_gender = np.array(df['gender'])
+us_births = np.array(df['births'])
+print("us year\n",us_year,"\n")
+print("us gender\n",us_gender,"\n")
+print("us births\n",us_births,"\n")
+
+#3 compute the aggregation of sum of total birth sum of female birth and sum of male birth
+print("sum of total birth: ",np.sum(us_births))
+female = np.equal(us_gender, "F")
+print("sum of female birth: ",np.sum(us_births[np.equal(us_gender, "F")]))
+print("sum of male birth: ",np.sum(us_births[np.equal(us_gender, "M")]))
+print("mean of total birth: ",np.sum(us_births.mean()))
+print("standard deviation of total birth: ",np.std(us_births))
+print("median of total birth: ",np.median(us_births))
+
+
+#3ii indicate the year with minimum birth and maximum birth
+print("maximum births: ", us_births.max())
+print("minimum births: ", us_births.min())
+
+#3.indicate the year with minimum birth and maximum birth
+print("year maximum births: ", us_year[np.argmax(us_births)])
+print("year minimum births: ", us_year[np.argmin(us_births)])
+
+#3.indicate the gender with minimum birth and maximum birth
+print("gender maximum births: ", us_gender[np.argmax(us_births)])
+print("gender minimum births: ", us_gender[np.argmin(us_births)])
+
+# Assignment 3
+Using the BicycleWeather.csv dataset perform the following operations:
+    1. Extract the PRCP column from the pandas object.
+    2. Using boolean functions/operators separate numbers from NAN
+    3. Using boolean masking separate all zeros and non-zeros into different variables.
+    4. From the variable holding non-zeros, multiply every values in the array with 100 and divid by 250
+    5. Calculate the following:
+        a. Median precip on rainy days
+        b. Median precip on summer days 
+        c. Maximum precip on summer days 
+        d. Median precip on non-summer rainy days 
+
+import pandas as pd
+seattle=pd.read_csv('C:\\Datasets\\BicycleWeather.csv')
+seattle.head()
+#using the Bicycleweather dataset 
+
+#.1. Extract the PRCP column from the pandas object. 
+rainfall = seattle['PRCP'].values
+rainfall [:100]
+
+inches = rainfall/254
+inches
+
+#2. Using boolean functions/operators separate numbers from NAN 
+np.greater_equal(rainfall,0).size
+
+#2. Using boolean functions/operators separate numbers from NAN 
+val = np.greater_equal(inches,0)
+inches[val]
+
+#3. Using boolean masking separate all zeros and non-zeros into different variables.
+zero_val =rainfall[np.equal(rainfall, 0)]
+non_zero = rainfall[np.greater(rainfall, 0)]
+print("zero values :",zero_val)
+print("none zero values :",non_zero)
+
+#3. Using boolean masking separate all zeros and non-zeros into different variables.
+# inches=inches[val]
+# rainy=(inches> 0)
+# inches[rainy]
+
+# inches=inches[val]
+# non_rainy=(inches== 0)
+# inches[non_rainy]
+
+#4. From the variable holding non-zeros, multiply every values in the array with 100 and divid by 250 
+(non_zero*100)/250
+
+
+
+#5 5. Calculate the following: a. Median precip on rainy days
+#b. Median precip on summer days 
+#c. Maximum precip on summer days 
+#d. Median precip on non-summer rainy days
+print("Median of rainy days in 2012 : ", np.median(non_zero))
+
+
+#b. Median precip on summer days 
+summer =(np.arange(556)-278<90) & (np.arange(556)-278>0)
+summer_prcp = non_zero[summer]
+print("median of summer days: ",np.median(summer_prcp))
+
+#c. Maximum precip on summer days 
+print("Maximum precipitation on summer days: ",np.max(summer_prcp))
+
+#d. Median precip on non-summer rainy days
+print( "Median precip on non-summer days: ",np.median(non_zero[~summer]))
